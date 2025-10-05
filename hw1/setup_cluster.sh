@@ -124,7 +124,7 @@ configure_environment() {
     "
 
     for host in "${ALL_HOSTS[@]}"; do
-        echo "Setting profile on $host"
+        log "Setting profile on $host"
         ssh "team@$host" "
             echo '$MAINPASS' | sudo -S -p '' echo
             echo -e '$PROFILE_CONFIG' | sudo -u $HADOOP_USER tee -a ~$HADOOP_USER/.profile > /dev/null
@@ -179,7 +179,7 @@ check_processes() {
     log "Checking JPS status on all nodes (wait 30s)"
     sleep 30s
     for host in "${ALL_HOSTS[@]}"; do
-        echo "--- JPS on $host ---"
+        log "JPS on $host"
         ssh "team@$host" "jps"
     done
 }
