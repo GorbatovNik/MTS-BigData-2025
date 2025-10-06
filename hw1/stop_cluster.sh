@@ -9,9 +9,6 @@ else
     exit 1
 fi
 
-read -sp "Enter SSH password: " MAINPASS
-echo
-
 log() { 
     echo "--- $1 ---" 
 } 
@@ -19,7 +16,6 @@ log() {
 stop_dfs() {
     log "Stopping DFS services from nn"
     ssh "team@$NN" "
-        echo '$MAINPASS' | sudo -S -p '' echo
         sudo -i -u $HADOOP_USER bash -c 'stop-dfs.sh'
     "
 }
