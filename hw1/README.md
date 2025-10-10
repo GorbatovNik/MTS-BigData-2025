@@ -32,6 +32,12 @@
 bash setup_cluster.sh
 ```
 
+### Запуск веб-интерфейса с локальной машины
+
+```bash
+ssh -L 9870:{внутренний адрес namenode}:9870 team@{внешний адрес для входа}
+```
+
 ### Остановка кластера hadoop
 ```bash
 bash stop_cluster.sh
