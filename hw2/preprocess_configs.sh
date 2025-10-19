@@ -22,6 +22,7 @@ declare -r XML_FILES=(
     "postgresql.conf"
     "pg_hba.conf"
     "hive-site.xml"
+    "create_table.sql"
 )
 
 process_xml_files() {

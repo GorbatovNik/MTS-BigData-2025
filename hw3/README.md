@@ -32,10 +32,11 @@
 
 ### Запуск
 ```bash
+bash preprocess_configs.sh
 bash setup_hive.sh
 ```
 
-### Создание тестовой таблицы и запроса
+### Загрузка данных в тестовую партиционированную таблицу
 ```bash
 bash make_test_data.sh
 ```

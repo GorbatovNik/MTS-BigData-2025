@@ -54,12 +54,11 @@ create_test_table() {
         sudo chown $HADOOP_USER:$HADOOP_USER ~$HADOOP_USER/create_table.sql
     "
 
-    log "Creating table 'test.some_data' and loading data"
+    log "Creating tables, loading data, and partitioning via a single SQL script"
     ssh "$ADMIN@$NN" "
-        sudo -i -u $HADOOP_USER bash -c \"
-            $HIVE_HOME/bin/beeline -u jdbc:hive2://$NN:5433 -f create_table.sql &&
-            $HIVE_HOME/bin/beeline -u jdbc:hive2://$NN:5433 -e \\\"LOAD DATA INPATH '/input/$DATA_NAME' INTO TABLE test.some_data;\\\"
-        \"
+        sudo -i -u $HADOOP_USER bash -c '
+            $HIVE_HOME/bin/beeline -u jdbc:hive2://$NN:5433 -f create_table.sql
+        '
     "
 }
 
