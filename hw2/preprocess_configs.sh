@@ -19,6 +19,9 @@ declare -r XML_FILES=(
     "hdfs-site.xml"
     "yarn-site.xml"
     "mapred-site.xml"
+    "postgresql.conf"
+    "pg_hba.conf"
+    "hive-site.xml"
 )
 
 process_xml_files() {
