@@ -21,16 +21,6 @@
    - Выполняет `schematool -dbType postgres -initSchema`.  
    - Запускает `hiveserver2` в фоне с логами в `/tmp/hs2.log`.
 
-### Входные данные (`cluster.conf`)
-- `DN01` — хост с PostgreSQL (метастор).  
-- `NN` — namenode (узел для Hive).  
-- `ADMIN` — пользователь для SSH-доступа.  
-- `HADOOP_USER` — пользователь Hadoop.  
-- `HADOOP_HOME` — путь Hadoop.  
-- `HIVE_HOME`, `HIVE_INSTALL_DIR`, `HIVE_URL`, `HIVE_ARCHIVE`.  
-- `PG_HIVE_USER_PASS` — пароль для пользователя Hive в PostgreSQL.  
-- `PG_JAR_VERSION` — версия JDBC-драйвера.  
-
 ### Требования
 - Развернутый (c помощью скрипта из hw1) HDFS на кластере.
 - Запущенный (c помощью скрипта из hw2) YARN на кластере.
@@ -45,7 +35,13 @@
 bash setup_hive.sh
 ```
 
-### Остановка YARN
+### Создание тестовой таблицы и запроса
 ```bash
-bash stop_hive.sh
+bash make_test_data.sh
+```
+
+### Запуск веб-интерфейсов с локальной машины
+
+```bash
+ssh -L 10002:{внутренний адрес namenode}:10002 9870:{внутренний адрес namenode}:9870 -L 8088:{внутренний адрес namenode}:8088 -L 19888:{внутренний адрес namenode}:19888 team@{внешний адрес для входа}
 ```

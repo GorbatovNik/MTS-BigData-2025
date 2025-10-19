@@ -25,6 +25,11 @@ declare -r XML_FILES=(
 )
 
 process_xml_files() {
+    export JN_IP="${NODES[$JN]}"
+    export NN_IP="${NODES[$NN]}"
+    export DN00_IP="${NODES[$DN00]}"
+    export DN01_IP="${NODES[$DN01]}"
+
     for xml_file in "${XML_FILES[@]}"; do
         if [ -f "$xml_file" ]; then
             log "Processing $xml_file"

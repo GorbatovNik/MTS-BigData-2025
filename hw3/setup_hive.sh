@@ -85,7 +85,7 @@ setup_hive() {
 }
 
 warehouse_init() {
-    log "Warehous dirs making"
+    log "Creating Hive warehouse directories"
     ssh "$ADMIN@$NN" "
         sudo -i -u $HADOOP_USER bash -c '
             hdfs dfs -mkdir -p /user/hive/warehouse &&
@@ -113,6 +113,9 @@ main() {
     setup_hive
     warehouse_init
     run_hive
+
+    log "Hive setup script finished."
+    log "HiveServer2 should be available at: http://$NN:10002"
 }
 
 main
