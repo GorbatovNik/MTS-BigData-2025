@@ -17,7 +17,7 @@
 
 ### Запуск скрипта
 ```bash
-bash preprocess_xml.sh
+bash preprocess_configs.sh
 bash setup_yarn.sh
 ```
 
