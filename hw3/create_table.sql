@@ -141,7 +141,7 @@ TBLPROPERTIES ('skip.header.line.count'='1');
 -- -----------------------------------------------------------------
 -- 3. Загрузка данных в Staging-таблицу
 -- -----------------------------------------------------------------
-LOAD DATA INPATH '/input/data-20241101-structure-20180828.csv' INTO TABLE test.some_data_staging;
+LOAD DATA INPATH '/input/${DATA_NAME}' INTO TABLE test.some_data_staging;
 
 -- -----------------------------------------------------------------
 -- 4. Вставка данных из Staging в целевую партиционированную таблицу
