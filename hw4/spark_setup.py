@@ -19,23 +19,52 @@ hdfs.check()
 data_name = "$DATA_NAME"
 reader = FileDFReader(connection=hdfs, format=CSV(delimiter=",", header=True), source_path="/input")
 df = reader.run([data_name])
-print(df.count())
+print(f"Количество записей в исходной таблице: {df.count()}")
 
 hive = Hive(spark=spark, cluster="x")
-print(hive.check())
+print(f"Проверка подключения к Hive: {hive.check()}")
 
+# Первая запись без изменений
 writer = DBWriter(
     connection=hive,
     table=f"test.{data_name}"
 )
 writer.run(df)
-print(df.rdd.getNumPartitions())
+print(f"Число партиций до репартиционирования: {df.rdd.getNumPartitions()}")
 
+# Репартиционирование по стране правообладателя
 df = df.repartition("right_holder_country_code")
 writer = DBWriter(
     connection=hive,
     table=f"test.{data_name}_1"
 )
 writer.run(df)
-print(df.rdd.getNumPartitions())
+print(f"Число партиций после репартиционирования: {df.rdd.getNumPartitions()}")
+
+# --- Демонстрация манипуляций с данными ---
+
+# 1. Фильтрация: выбираем записи, где right_holder_country_code не пустой
+filtered_df = df.filter(F.col("right_holder_country_code").isNotNull() & 
+                           (F.col("right_holder_country_code") != ""))
+print(f"Количество записей после фильтрации (непустой country_code): {filtered_df.count()}")
+
+# 2. Агрегация: считаем количество записей по каждой стране правообладателя
+country_counts = filtered_df.groupBy("right_holder_country_code") \
+    .agg(F.count("*").alias("record_count")) \
+    .orderBy(F.col("record_count").desc())
+
+print("Топ-5 стран по количеству записей:")
+country_counts.show(5)
+
+
+# 3. Выборка ограниченного набора столбцов для вывода
+selected_columns = df.select(
+    "registration_number",
+    "registration_date",
+    "right_holder_name",
+    "right_holder_country_code",
+).limit(10)
+
+print("Выборка первых 10 записей с выбранными столбцами:")
+selected_columns.show(10, truncate=False)
 

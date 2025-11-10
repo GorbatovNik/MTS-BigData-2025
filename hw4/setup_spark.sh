@@ -20,6 +20,15 @@ run_metastore() {
     "
 }
 
+create_test_database() {
+    log "Creating Hive database 'test' via Beeline"
+    ssh "$ADMIN@$NN" "
+        sudo -i -u $HADOOP_USER bash -c '
+            $HIVE_HOME/bin/beeline -u jdbc:hive2://$NN:5433 -e \"DROP DATABASE IF EXISTS test CASCADE; CREATE DATABASE IF NOT EXISTS test;\"
+        '
+    "
+}
+
 load_data() {
     log "Downloading test data"
     if [ ! -f "$DATA_NAME" ]; then
@@ -63,25 +72,33 @@ copy_hadoop_and_hive_to_jn() {
     sudo mv /tmp/apache-hive-4.0.0-alpha-2-bin /home/$HADOOP_USER
 }
 
+
+setup_python() {
+    log "python3 installing"
+    
+    sudo apt install -y python3-venv
+    sudo apt install -y python3-pip
+
+    log "Python environment setup as $HADOOP_USER user..."
+    sudo -i -u $HADOOP_USER bash -c '
+        python3 -m venv .venv
+
+        source .venv/bin/activate
+        pip install -U pip
+        pip install "pyspark==3.5.6"
+        pip install onetl
+    '
+}
+
 main() {
     run_metastore
+    create_test_database
     load_data
-    # setup configs on JH для простоты
     copy_hadoop_and_hive_to_jn
-
-    sudo -i -u hadoop
-
-    sudo apt install python3-venv
-    sudo apt install python3-pip
-
-    python3 -m venv .venv
-    source .venv/bin/activate
-    pip install -U pip
-    pip install "pyspark==3.5.6"
-    pip install onetl
-
-    # запуск python
-
+    setup_python
+    sudo -i -u $HADOOP_USER bash -c '
+        python3 spark_setup.py
+    '
     log "Spark setup script finished."
 }
 
