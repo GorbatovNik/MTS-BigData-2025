@@ -35,20 +35,4 @@
         <name>hive.execution.engine</name>
         <value>mr</value>
     </property>
-    <property>
-        <name>hive.cbo.enable</name>
-        <value>true</value>
-    </property>
-    <property>
-        <name>hive.stats.autogather</name>
-        <value>true</value>
-    </property>
-    <property>
-        <name>hive.optimize.ppd</name>
-        <value>true</value>
-    </property>
-    <property>
-        <name>hive.optimize.dynamic.partition.pruning</name>
-        <value>true</value>
-    </property>
 </configuration>

@@ -23,6 +23,7 @@ declare -r XML_FILES=(
     "pg_hba.conf"
     "hive-site.xml"
     "create_table.sql"
+    "spark_setup.py"
 )
 
 process_xml_files() {
