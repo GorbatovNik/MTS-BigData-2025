@@ -87,6 +87,7 @@ setup_python() {
         pip install -U pip
         pip install "pyspark==3.5.6"
         pip install onetl
+        pip install prefect
     '
 }
 
@@ -97,6 +98,7 @@ main() {
     copy_hadoop_and_hive_to_jn
     setup_python
     sudo -i -u $HADOOP_USER bash -c '
+        source .venv/bin/activate
         python3 spark_setup.py
     '
     log "Spark setup script finished."

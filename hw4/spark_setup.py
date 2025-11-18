@@ -24,7 +24,6 @@ print(f"Количество записей в исходной таблице: 
 hive = Hive(spark=spark, cluster="x")
 print(f"Проверка подключения к Hive: {hive.check()}")
 
-# Первая запись без изменений
 writer = DBWriter(
     connection=hive,
     table=f"test.{data_name}"
@@ -36,19 +35,18 @@ print(f"Число партиций до репартиционирования:
 df = df.repartition("right_holder_country_code")
 writer = DBWriter(
     connection=hive,
-    table=f"test.{data_name}_1"
+    table=f"test.{data_name}_1",
+    options=Hive.WriteOptions(partitionBy=["right_holder_country_code"])
 )
 writer.run(df)
 print(f"Число партиций после репартиционирования: {df.rdd.getNumPartitions()}")
 
 # --- Демонстрация манипуляций с данными ---
 
-# 1. Фильтрация: выбираем записи, где right_holder_country_code не пустой
-filtered_df = df.filter(F.col("right_holder_country_code").isNotNull() & 
-                           (F.col("right_holder_country_code") != ""))
+filtered_df = df.filter(F.col("right_holder_country_code").isNotNull() &
+                        (F.col("right_holder_country_code") != ""))
 print(f"Количество записей после фильтрации (непустой country_code): {filtered_df.count()}")
 
-# 2. Агрегация: считаем количество записей по каждой стране правообладателя
 country_counts = filtered_df.groupBy("right_holder_country_code") \
     .agg(F.count("*").alias("record_count")) \
     .orderBy(F.col("record_count").desc())
@@ -56,8 +54,6 @@ country_counts = filtered_df.groupBy("right_holder_country_code") \
 print("Топ-5 стран по количеству записей:")
 country_counts.show(5)
 
-
-# 3. Выборка ограниченного набора столбцов для вывода
 selected_columns = df.select(
     "registration_number",
     "registration_date",
@@ -67,4 +63,3 @@ selected_columns = df.select(
 
 print("Выборка первых 10 записей с выбранными столбцами:")
 selected_columns.show(10, truncate=False)
-
